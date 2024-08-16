@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$1" == "install" ] && [ "$2" == "web" ]; then
+    cd web/AwesomHA
+    npm install
+elif [ "$1" == "serve" ] && [ "$2" == "web" ]; then
+    cd web/AwesomHA
+    npm run dev
+elif [ "$1" == "install" ] && [ "$2" == "server" ]; then
+    cd server
+    npm install
+elif [ "$1" == "serve" ] && [ "$2" == "server" ]; then
+    cd server
+    npm run dev
+else
+    echo "Invalid arguments"
+    exit 1
+fi
