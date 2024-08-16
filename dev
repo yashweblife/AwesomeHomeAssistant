@@ -11,7 +11,7 @@ elif [ "$1" == "install" ] && [ "$2" == "server" ]; then
     npm install
 elif [ "$1" == "serve" ] && [ "$2" == "server" ]; then
     cd server
-    npm run dev
+    go run main.go
 elif [ "$1" == "new" ] && [ "$2" == "c" ] && [ "$3" != "" ]; then
     cd web/AwesomHA/src/components
     mkdir $3
