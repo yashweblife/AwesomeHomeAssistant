@@ -12,6 +12,22 @@ elif [ "$1" == "install" ] && [ "$2" == "server" ]; then
 elif [ "$1" == "serve" ] && [ "$2" == "server" ]; then
     cd server
     npm run dev
+elif [ "$1" == "new" ] && [ "$2" == "c" ] && [ "$3" != "" ]; then
+    cd web/AwesomHA/src/components
+    mkdir $3
+    cd $3
+    touch $3.tsx
+    echo "export default function $3() {
+    return <></>
+}" > $3.tsx
+elif [ "$1" == "new" ] && [ "$2" == "p" ] && [ "$3" != "" ]; then
+    cd web/AwesomHA/src/pages
+    mkdir $3
+    cd $3
+    touch $3.tsx
+    echo "export default function $3() {
+    return <></>
+}" > $3.tsx
 else
     echo "Invalid arguments"
     exit 1
