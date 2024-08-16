@@ -1,0 +1,15 @@
+// create workspace
+
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.exclude": {
+            "**/.git": true,
+            "**/node_modules": true
+        }
+    }
+}
