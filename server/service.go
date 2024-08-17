@@ -16,25 +16,40 @@ type User struct {
 
 var DB *sql.DB
 
-func AuthenticateLogin(Email string, Password string) bool {
-	rows, err := DB.Query("SELECT email, password FROM users WHERE email = ? AND password = ?", Email, Password)
+type AuthLoginOutput struct {
+	valid  bool
+	userID string
+}
+
+func AuthenticateLogin(Email string, Password string) AuthLoginOutput {
+	rows, err := DB.Query("SELECT id, email, password FROM users WHERE email = ? AND password = ?", Email, Password)
 	if err != nil {
 		log.Fatal(err)
+		return AuthLoginOutput{
+			valid:  false,
+			userID: "",
+		}
 	}
-
 	var isEmail string
 	var isPassword string
+	var userID string
 
 	rows.Scan(&isEmail, &isPassword)
 	if isEmail == Email && isPassword == Password {
-		return true
+		return AuthLoginOutput{
+			valid:  true,
+			userID: userID,
+		}
 	}
-	return false
+	return AuthLoginOutput{
+		valid:  false,
+		userID: "",
+	}
 }
 
 func AddUser(Name string, Email string, Password string) bool {
 
-	index, err := DB.Exec("INSERT INTO users (name, email, password) VALUES (?, ?, ?)", Name, Email, Password)
+	index, err := DB.Exec("INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)", Name, Email, Password)
 	if err != nil {
 		log.Fatal(err)
 		return false
