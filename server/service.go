@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-
+	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -48,8 +48,19 @@ func AuthenticateLogin(Email string, Password string) AuthLoginOutput {
 }
 
 func AddUser(Name string, Email string, Password string) bool {
+	// check if email already exists, get the first instance
+	rows, err := DB.Exec("SELECT from users WHERE email = ? LIMIT 1", Email)
+	if err != nil {
+		log.Fatal(err)
+		return false
+	}
 
-	index, err := DB.Exec("INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)", Name, Email, Password)
+	if rows != nil {
+		return false
+	}
+	
+	Id := uuid.New().String()
+	index, err := DB.Exec("INSERT INTO users (id, name, email, password) VALUES (?, ?, ?, ?)", Id, Name, Email, Password)
 	if err != nil {
 		log.Fatal(err)
 		return false
@@ -60,7 +71,7 @@ func AddUser(Name string, Email string, Password string) bool {
 
 func GetAllUsers() []User {
 	var users []User
-	rows, err := DB.Query("SELECT name, email, password FROM users")
+	rows, err := DB.Query("SELECT id, name, email, password FROM users")
 	if err != nil {
 		log.Fatal(err)
 	}
