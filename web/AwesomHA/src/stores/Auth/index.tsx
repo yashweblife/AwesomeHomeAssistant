@@ -24,9 +24,11 @@ export default function AuthContextProvider({children}: {children: any}){
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [userID, setUserID] = useState({})
     const handleLogin = async (email: string, password: string) => {
+        console.log(email, password)
         try {
             const res = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
+                mode:"no-cors",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -35,7 +37,8 @@ export default function AuthContextProvider({children}: {children: any}){
                     password
                 })
             })
-            return res
+            const data = await res.json()
+            return data
         } catch (error) {
             console.log(error)
         }
@@ -43,8 +46,9 @@ export default function AuthContextProvider({children}: {children: any}){
     }
     const handleSignup = async (name:string, email: string, password: string) => {
         try {
-            const res = await fetch("http://localhost:8080/auth/signup", {
+            const res = await fetch("http://localhost:8080/auth/register", {
                 method: "POST",
+                mode:"no-cors",
                 headers: {
                     "Content-Type": "application/json"
                 },
@@ -54,7 +58,8 @@ export default function AuthContextProvider({children}: {children: any}){
                     password
                 })
             })
-            return res
+            const data = await res.json()
+            return data
         } catch (error) {
             console.log(error)
         }
