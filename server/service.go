@@ -18,39 +18,40 @@ type User struct {
 var DB *sql.DB
 
 type AuthLoginOutput struct {
-	valid  bool
-	userID string
+	Valid  bool
+	UserID string
 }
 
-// it should output the userID or nill
-func AuthenticateLogin(Email string, Password string) AuthLoginOutput {
-	rows, err := DB.Query("SELECT id, email, password FROM users WHERE email = ? AND password = ?", Email, Password)
-	fmt.Println("INSIDE AUTH")
-	if err != nil {
-		log.Fatal(err)
-		return AuthLoginOutput{
-			valid:  false,
-			userID: "",
-		}
-	}
-	fmt.Println("Passes Query", rows)
-	var isEmail string
-	var isPassword string
+func AuthenticateLogin(email string, password string) AuthLoginOutput {
 	var userID string
+	var dbEmail string
+	var dbPassword string
 
-	rows.Scan(&isEmail, &isPassword)
-	fmt.Println("Passes Scan")
-	if isEmail == Email && isPassword == Password {
-		fmt.Println("OUTPUT", isEmail, isPassword)
+	err := DB.QueryRow("SELECT id, email, password FROM users WHERE email = ? AND password = ?", email, password).Scan(&userID, &dbEmail, &dbPassword)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return AuthLoginOutput{
+				Valid:  false,
+				UserID: "",
+			}
+		}
+		log.Println("Error:", err)
 		return AuthLoginOutput{
-			valid:  true,
-			userID: userID,
+			Valid:  false,
+			UserID: "",
 		}
 	}
-	fmt.Println("OUTPUT", isEmail, isPassword)
+
+	if email == dbEmail && password == dbPassword {
+		return AuthLoginOutput{
+			Valid:  true,
+			UserID: userID,
+		}
+	}
+
 	return AuthLoginOutput{
-		valid:  false,
-		userID: "",
+		Valid:  false,
+		UserID: "",
 	}
 }
 
