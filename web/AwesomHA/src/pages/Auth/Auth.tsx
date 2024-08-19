@@ -11,17 +11,33 @@ type AuthBoxProps = {
 function LoginBox({ setState, setError, handleAuth }:AuthBoxProps) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    async function handleLoginButton(){
-        try {
-            const output = await handleAuth(email, password)
-            if (output) {
-                return(true)
-            }
-        } catch (error: any) {
-            setError(error)
-            return(false)
+    const handleLoginButton = async () => {
+        console.log('handleLoginButton called');
+        if (!handleAuth) {
+            console.log('handleAuth is not defined');
+            throw new Error('handleAuth is not defined');
         }
-    }
+
+        try {
+            console.log('trying to login');
+            if (!email || !password) {
+                console.log('email or password is empty');
+                throw new Error('Email and password are required');
+            }
+
+            const output = await handleAuth(email, password);
+            console.log('login output', output);
+            return !!output;
+        } catch (error) {
+            console.log('login error', error);
+            if (!(error instanceof Error)) {
+                throw new Error('Unexpected error');
+            }
+
+            setError(error);
+            return false;
+        }
+    };
     return (
         <Card>
             <CardBody>
@@ -45,21 +61,51 @@ function SignupBox({ setState, setError, handleAuth }: AuthBoxProps) {
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
     
-    async function handleSignupButton(){
-        if (password !== confirmPassword) {
-            setError(new Error("Passwords do not match"))
-            return
+    const handleSignupButton = async () => {
+        console.log('handleSignupButton called');
+        if (password == null || confirmPassword == null) {
+            console.log('password or confirmPassword is null');
+            const error = new Error("Password and confirm password cannot be null");
+            console.log('throwing error:', error);
+            return setError(error);
         }
+        console.log('password and confirmPassword are not null');
+        if (password !== confirmPassword) {
+            console.log('passwords do not match');
+            const error = new Error("Passwords do not match");
+            console.log('throwing error:', error);
+            return setError(error);
+        }
+
         try {
-            const output = await handleAuth(name, email, password)
-            if (output) {
-                return(true)
+            console.log('trying to signup');
+            const output = await handleAuth(name, email, password);
+            console.log('signup output', output);
+            if (output == null) {
+                console.log('handleAuth returned null');
+                const error = new Error("handleAuth returned null");
+                console.log('throwing error:', error);
+                throw error;
             }
-        } catch (error: any) {
-            setError(error)
-            return;
-        }    
-    }
+            return !!output;
+        } catch (error) {
+            console.log('signup error', error);
+            if (error == null) {
+                console.log('handleAuth threw null exception');
+                const error = new Error("handleAuth threw null exception");
+                console.log('throwing error:', error);
+                throw error;
+            }
+            if (!(error instanceof Error)) {
+                console.log('handleAuth threw something that was not an instance of Error');
+                const error = new Error("handleAuth threw something that was not an instance of Error");
+                console.log('throwing error:', error);
+                throw error;
+            }
+            console.log('setting error', error);
+            setError(error);
+        }
+    };
     return (
         <Card>
             <CardBody>
