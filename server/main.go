@@ -21,6 +21,7 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 	var test = AuthenticateLogin(auth.Email, auth.Password)
+	fmt.Println("DETAILS: ", test)
 	c.JSON(200, gin.H{"data": test})
 }
 func AddUserToDB(c *gin.Context) {
@@ -30,8 +31,8 @@ func AddUserToDB(c *gin.Context) {
 		return
 	}
 	fmt.Println(user)
-	AddUser(user.Name, user.Email, user.Password)
-	c.JSON(200, gin.H{"data": "1"})
+	Id := AddUser(user.Name, user.Email, user.Password)
+	c.JSON(200, gin.H{"data": &Id})
 }
 func GetUsers(c *gin.Context) {
 	users := GetAllUsers()
@@ -39,7 +40,7 @@ func GetUsers(c *gin.Context) {
 }
 func main() {
 	r := gin.Default()
-	InitDB()
+	InitUsersDB()
 	auth_route := r.Group("/auth")
 	{
 		auth_route.POST("login", LoginUser)
