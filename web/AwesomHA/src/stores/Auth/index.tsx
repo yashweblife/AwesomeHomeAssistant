@@ -41,8 +41,7 @@ export default function AuthContextProvider({children}: {children: any}){
             return data
         } catch (error) {
             console.log(error)
-        }
-        
+        }        
     }
     const handleSignup = async (name:string, email: string, password: string) => {
         try {
@@ -64,10 +63,15 @@ export default function AuthContextProvider({children}: {children: any}){
             console.log(error)
         }
     }
+
+    const handleLogout = async()=>{
+        if(!isAuthenticated) return;
+        setIsAuthenticated(false)
+    }
     const output:AuthContext = {
         handleLogin,
         handleSignup,
-        handleLogout: () => setIsAuthenticated(false),
+        handleLogout,
         isAuthenticated,
         user: userID
     }
