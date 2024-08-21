@@ -1,5 +1,6 @@
 import { Button, ButtonGroup, Card, CardBody, Flex, Heading, Input, Stack, Text } from "@chakra-ui/react"
 import { useContext, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { AuthContext } from "../../stores/Auth"
 
 type AuthBoxProps = {
@@ -11,6 +12,7 @@ type AuthBoxProps = {
 function LoginBox({ setState, setError, handleAuth }:AuthBoxProps) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const nav = useNavigate()
     const handleLoginButton = async () => {
         console.log('handleLoginButton called');
         if (!handleAuth) {
@@ -27,6 +29,9 @@ function LoginBox({ setState, setError, handleAuth }:AuthBoxProps) {
 
             const output = await handleAuth(email, password);
             console.log('login output', output);
+            if(!!output){
+                nav('/dashboard');
+            }
             return !!output;
         } catch (error) {
             console.log('login error', error);
@@ -60,7 +65,7 @@ function SignupBox({ setState, setError, handleAuth }: AuthBoxProps) {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
-    
+    const nav = useNavigate()
     const handleSignupButton = async () => {
         console.log('handleSignupButton called');
         if (password == null || confirmPassword == null) {
@@ -87,6 +92,7 @@ function SignupBox({ setState, setError, handleAuth }: AuthBoxProps) {
                 console.log('throwing error:', error);
                 throw error;
             }
+            nav('/dashboard');
             return !!output;
         } catch (error) {
             console.log('signup error', error);
