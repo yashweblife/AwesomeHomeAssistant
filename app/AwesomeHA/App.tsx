@@ -21,6 +21,7 @@ function App(): React.JSX.Element {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic">
           <View>
+            LobinBox
           </View>
       </ScrollView>
     </SafeAreaView>
