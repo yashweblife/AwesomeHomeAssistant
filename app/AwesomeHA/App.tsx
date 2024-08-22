@@ -1,21 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  useColorScheme
+  useColorScheme,
+  View
 } from 'react-native';
 
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -27,8 +19,9 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView style={backgroundStyle}>
       <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+        contentInsetAdjustmentBehavior="automatic">
+          <View>
+          </View>
       </ScrollView>
     </SafeAreaView>
   );
