@@ -11,28 +11,31 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
     const [data, setData] = useState(0)
     const [isURLValid, setIsURLValid] = useState(false)
     useEffect(() => {
-    const validateUrl = async (): Promise<number | undefined> => {
-        try {
-            const response = await fetch(url, { method: 'HEAD' });
+        const validateUrl = async (): Promise<number | undefined> => {
+            try {
+                const URL = url + "device/";
+                const response = await fetch(URL, { method: 'GET'});
+                console.log(response)
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                setIsURLValid(true);
+
+                return setInterval(handleGetData, 1000);
+            } catch (error) {
+                console.error(error);
+                return undefined;
             }
-
-            setIsURLValid(true);
-
-            return setInterval(handleGetData, 1000);
-        } catch (error) {
-            console.error(error);
-            return undefined;
         }
-    }
         const result = validateUrl().catch(err => err);
     }, [])
 
     async function handleGetData() {
         try {
-            const response = await fetch(url + 'value', {cache: 'no-store'});
+            const URL = url + 'device/';
+            console.log(URL);
+            const response = await fetch(URL, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

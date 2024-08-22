@@ -21,7 +21,7 @@ export default function Dashboard() {
             </Tooltip>
           </VStack>
           <VStack height={'100%'} p={2}>
-              <SensorDisplay name="light" url="http://192.168.0.29:81/"></SensorDisplay>
+              <SensorDisplay name="light" url="http://localhost:8080/"></SensorDisplay>
           </VStack>
         </HStack>
       </Box>
