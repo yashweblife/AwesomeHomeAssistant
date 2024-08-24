@@ -7,7 +7,7 @@ type Command struct {
 
 type Device struct {
 	ID       string    `json:"id"`
-	IP       string    `json:"ip"`
+	URL      string    `json:"url"`
 	Type     bool      `json:"type"`
 	Name     string    `json:"name"`
 	Commands []Command `json:"commands"`
