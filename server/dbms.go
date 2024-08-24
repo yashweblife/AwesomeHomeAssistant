@@ -17,11 +17,11 @@ func InitDatabase() {
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT, devices JSONB) ")
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS DEVICES (id TEXT, url TEXT, name TEXT, type TEXT, commands JSONB) ")
+	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS DEVICES (id TEXT, url TEXT, name TEXT)")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -136,9 +136,32 @@ func AuthenticateLoginAttempt(email, password string) bool {
 }
 
 // Devices
-func AddDeviceToDB(url, name, id, TYPE string, commands []Command) {}
-func AddDevcieToUserDeviceList(id string)                          {}
-func GetDeviceInfo(id string)                                      {}
-func GetAllDevices()                                               {}
-func RemoveDevice(id string)                                       {}
-func RemoveAllDevices()                                            {}
+func AddDeviceToDB(id, url, name string) {
+	_, err := DB.Exec("INSERT INTO DEVICES (id, url, name) VALUES (?,?,?)", id, url, name)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+}
+func GetDeviceFromDB(id string, device *Device) {}
+func GetAllDevices(list *[]Device) {
+
+	*list = []Device{}
+
+	rows, err := DB.Query("SELECT * from devices")
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	for rows.Next() {
+		var device Device
+		err := rows.Scan(&device.ID, &device.URL, &device.Name)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		*list = append(*list, device)
+	}
+	fmt.Println(*list)
+}
+func RemoveDeviceFromDB(id string) {}
+func RemoveAllDevices()            {}
