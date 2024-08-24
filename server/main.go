@@ -143,7 +143,7 @@ func SendDoesWorkMessage(c *gin.Context) {
 func main() {
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:4000"},
 		AllowMethods:     []string{"PUT", "GET", "POST", "PATCH"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
