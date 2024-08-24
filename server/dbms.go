@@ -14,7 +14,7 @@ func InitDatabase() {
 	var err error
 	DB, err = sql.Open("sqlite3", "./AwesomeHA.db")
 	if err != nil {
-		fmt.Errorf(err.Error())
+		fmt.Println(err.Error())
 	}
 	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT, devices JSONB) ")
 	if err != nil {
@@ -46,7 +46,7 @@ func AddUserToDB(id, name, email, password string) bool {
 	fmt.Println("Inserting user: ", id)
 	_, err = DB.Query("INSERT INTO users (id, name, email, password, devices) VALUES (?, ?, ?, ?, ?)", id, name, email, password, []Device{})
 	if err != nil {
-		fmt.Errorf(err.Error())
+		fmt.Println(err.Error())
 		return false
 	}
 	fmt.Println("Inserted user: ", id)
@@ -59,7 +59,7 @@ func GetUserInfo(id string, email *string) {
 
 	rows, err = DB.Query("SELECT * from users WHERE id = ? LIMIT 1", id)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		fmt.Println(err.Error())
 		return
 	}
 
@@ -71,14 +71,14 @@ func GetAllUsers(list []User) bool {
 
 	rows, err = DB.Query("SELECT * from users")
 	if err != nil {
-		fmt.Errorf(err.Error())
+		fmt.Println(err.Error())
 		return false
 	}
 	for rows.Next() {
 		var user User
 		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 		if err != nil {
-			fmt.Errorf(err.Error())
+			fmt.Println(err.Error())
 			return false
 		}
 		list = append(list, user)
