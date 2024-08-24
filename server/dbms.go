@@ -83,6 +83,10 @@ func GetAllUsers(list []User) bool {
 	fmt.Println(list)
 	return (true)
 }
+func EditUser(id, name, email, password string) bool {
+
+	return true
+}
 func RemoveUserFromDB(id string, didRemoveUser *bool) {
 	stmt, err := DB.Prepare("DELETE FROM users WHERE id = ?")
 	if err != nil {

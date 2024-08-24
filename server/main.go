@@ -85,6 +85,21 @@ func GetUser(c *gin.Context) {
 	fmt.Println("userEmail: ", userEmail)
 	c.JSON(200, gin.H{"data": userEmail})
 }
+func EditUserInfo(c *gin.Context) {
+
+	type input struct {
+		Id       string `json:"id"`
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	var id input
+	if err := c.ShouldBindJSON(&id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
+	c.JSON(200, gin.H{"data": "Edited"})
+}
 func RemoveUser(c *gin.Context) {
 
 	type input struct {
