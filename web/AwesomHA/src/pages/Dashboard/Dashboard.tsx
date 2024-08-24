@@ -1,29 +1,10 @@
-import { Box, Button, HStack, IconButton, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { Box, HStack, IconButton, Tooltip, useDisclosure, VStack } from "@chakra-ui/react";
 import { BsFillDeviceSsdFill } from 'react-icons/bs';
 import { FaCog, FaPlus, FaRegUser, FaRobot } from 'react-icons/fa';
+import AddDeviceModal from "../../components/AddDeviceModal";
 import { SensorDisplay } from "../../components/SensorDisplay";
 export default function Dashboard() {
-  const {isOpen, onOpen, onClose} = useDisclosure()
-  const [modalDeviceName, setModalDeviceName] = useState('')
-  const [modalDeviceUrl, setModalDeviceUrl] = useState('http://192.168.')
-  const handleAddButton = async ()=>{
-    const output = {
-      name: modalDeviceName,
-      url: modalDeviceUrl
-    }
-    try {
-      const test = await fetch("http://localhost:8080/device/register", {
-        method: "POST",
-        body: JSON.stringify(output),
-      }) 
-      if(!test.ok){
-        throw new Error("error")
-      }
-      onClose()
-    } catch (error) {
-    }
-  }
+  const {isOpen, onOpen, onClose} =  useDisclosure();
   return (
     <Box width="100vw" height="100vh" backgroundColor={'rgb(32,32,32)'}>
       <HStack width="100vw" height="100vh">
@@ -48,23 +29,7 @@ export default function Dashboard() {
           <SensorDisplay name="light" url="http://localhost:8080/"></SensorDisplay>
         </VStack>
       </HStack>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Add Device</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Input placeholder="Device Name" value={modalDeviceName} onChange={(e) => setModalDeviceName(e.target.value)}></Input>
-            <Input placeholder="Device URL" value={modalDeviceUrl} onChange={(e) => setModalDeviceUrl(e.target.value)}></Input>
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
-            </Button>
-            <Button variant='ghost' onClick={handleAddButton}>Add</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <AddDeviceModal isOpen={isOpen} onClose={onClose} />
     </Box>
   )
 }
