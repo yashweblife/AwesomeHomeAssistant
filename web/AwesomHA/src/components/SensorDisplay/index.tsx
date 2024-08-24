@@ -33,17 +33,16 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
 
     async function handleGetData() {
         try {
-            const URL = url + 'device/';
-            console.log(URL);
+            const URL = url + 'device/value';
             const response = await fetch(URL, { cache: 'no-store' });
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const value = await response.json();
+            const {value} = await response.json();
             if (value === null) {
                 throw new Error('Received null value from server');
             }
-            setData(value);
+            setData(Number(value));
 
         } catch (error) {
             if (!(error instanceof Error)) {
