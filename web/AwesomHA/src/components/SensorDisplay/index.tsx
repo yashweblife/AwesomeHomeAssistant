@@ -84,7 +84,7 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
                             <Text color={'rgb(255,255,255)'}>
                                 {Math.round(data / 1024 * 100)}%
                             </Text>
-                            <IconButton onClick={handlePause} aria-label="" color='white' fontSize={'20'} isRound variant='none' icon={isPaused?<FaPause /> :<FaPlay />}></IconButton>
+                            <IconButton onClick={handlePause} aria-label="" color='white' fontSize={'20'} isRound variant='none' icon={isPaused?<FaPlay />:<FaPause />}></IconButton>
                         </CircularProgressbarWithChildren>
                     </CardBody>
                     :
