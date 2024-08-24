@@ -28,43 +28,38 @@ func InitDatabase() {
 }
 
 // Authentication
-func AddUserToDB(id, name, email, password string) bool {
-	//check if user exists by email
-	var err error
-	var result *sql.Rows
-	fmt.Println(id, name, email, password)
-	result, err = DB.Query("SELECT email from users WHERE email = ? LIMIT 1", email)
-	for result.Next() {
-		var e string
-		result.Scan(&e)
-		fmt.Println(e)
-	}
-
+func AddUserToDB(id, name, email, password string, didCreate *bool) error {
+	var count int
+	fmt.Println("INSIDE ADD USER TO DB", id, email)
+	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE id = ? AND email = ?", id, email).Scan(&count)
 	if err != nil {
-		fmt.Println(err.Error())
-		return false
+		return err
 	}
-	fmt.Println("Inserting user: ", id)
-	_, err = DB.Query("INSERT INTO users (id, name, email, password, devices) VALUES (?, ?, ?, ?, ?)", id, name, email, password, []Device{})
+	fmt.Println("USER COUNT", count)
+	if count > 0 {
+		*didCreate = false
+		return nil
+	}
+	_, err = DB.Exec("INSERT INTO USERS (id, name, email, password) VALUES (?,?,?,?)", id, name, email, password)
 	if err != nil {
-		fmt.Println(err.Error())
-		return false
+		return err
 	}
-	fmt.Println("Inserted user: ", id)
-	return true
-
+	var _email string
+	err = DB.QueryRow("SELECT email FROM users WHERE id = ?", id).Scan(&_email)
+	if err != nil {
+		return err
+	}
+	fmt.Println(_email)
+	*didCreate = true
+	return nil
 }
 func GetUserInfo(id string, email *string) {
-	var rows *sql.Rows
-	var err error
-
-	rows, err = DB.Query("SELECT * from users WHERE id = ? LIMIT 1", id)
+	err := DB.QueryRow("SELECT email from users WHERE id = ?", id).Scan(&email)
 	if err != nil {
 		fmt.Println(err.Error())
 		return
 	}
-
-	fmt.Println(rows)
+	fmt.Println(email)
 }
 func GetAllUsers(list []User) bool {
 	var rows *sql.Rows
