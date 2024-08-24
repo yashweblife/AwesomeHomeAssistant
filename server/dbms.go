@@ -13,6 +13,7 @@ var DB *sql.DB
 func InitDatabase() {
 	var err error
 	DB, err = sql.Open("sqlite3", "./AwesomeHA.db")
+	err = DB.Ping()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
