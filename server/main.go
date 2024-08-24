@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	// "encoding/json"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
@@ -50,20 +51,53 @@ func AddUser(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 		return
 	}
-	didCreateUser := AddUserToDB(userID, user.Name, user.Email, user.Password)
+	var didCreateUser bool
+	err := AddUserToDB(userID, user.Name, user.Email, user.Password, &didCreateUser)
+	if err != nil {
+		fmt.Errorf(err.Error())
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
 	fmt.Println("User created: ", didCreateUser)
 	if !didCreateUser {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": userID})
-	fmt.Println(user)
 }
 func GetUsers(c *gin.Context) {
 	var users []User
 	valid := GetAllUsers(users)
 	fmt.Println(valid)
 	c.JSON(200, gin.H{"data": users})
+}
+func GetUser(c *gin.Context) {
+	type input struct {
+		Id string `json:"id"`
+	}
+	var id input
+	if err := c.ShouldBindJSON(&id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
+	var userEmail string
+	GetUserInfo(id.Id, &userEmail)
+	fmt.Println("userEmail: ", userEmail)
+	c.JSON(200, gin.H{"data": userEmail})
+}
+func RemoveUser(c *gin.Context) {
+
+	type input struct {
+		Id string `json:"id"`
+	}
+	var id input
+	if err := c.ShouldBindJSON(&id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
+	var didRemoveUser bool
+	RemoveUserFromDB(id.Id, &didRemoveUser)
+	c.JSON(200, gin.H{"data": didRemoveUser})
 }
 
 func SendRequestToDevice(c *gin.Context) {
@@ -111,6 +145,8 @@ func main() {
 		auth_route.POST("login", LoginUser)
 		auth_route.POST("register", AddUser)
 		auth_route.GET("users", GetUsers)
+		auth_route.GET("user", GetUser)
+		auth_route.DELETE("user", RemoveUser)
 	}
 	device_route := r.Group("/device")
 	{

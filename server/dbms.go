@@ -83,11 +83,28 @@ func GetAllUsers(list []User) bool {
 	fmt.Println(list)
 	return (true)
 }
-func RemoveUser(id string, didRemoveUser *bool) {
-	_, err := DB.Query("DELETE FROM users WHERE id = ?", id)
+func RemoveUserFromDB(id string, didRemoveUser *bool) {
+	stmt, err := DB.Prepare("DELETE FROM users WHERE id = ?")
 	if err != nil {
 		*didRemoveUser = false
 		fmt.Println(err.Error())
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec(id)
+	if err != nil {
+		*didRemoveUser = false
+		fmt.Println(err.Error())
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		*didRemoveUser = false
+		fmt.Println(err.Error())
+	}
+
+	if affected == 0 {
+		*didRemoveUser = false
 	}
 	*didRemoveUser = true
 }
