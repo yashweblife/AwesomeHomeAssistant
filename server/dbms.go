@@ -108,7 +108,25 @@ func RemoveUserFromDB(id string, didRemoveUser *bool) {
 	}
 	*didRemoveUser = true
 }
-func RemoveAllUsers() {}
+func RemoveAllUsers() {
+	stmt, err := DB.Prepare("DELETE * FROM users")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	defer stmt.Close()
+
+	result, err := stmt.Exec()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	affected, err := result.RowsAffected()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println(affected)
+	fmt.Println("All users removed")
+}
 func AuthenticateLoginAttempt(email, password string) bool {
 	return true
 }
