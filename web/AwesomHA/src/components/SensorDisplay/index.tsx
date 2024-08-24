@@ -1,7 +1,8 @@
-import { Card, CardBody, Text } from "@chakra-ui/react"
+import { Card, CardBody, IconButton, Text } from "@chakra-ui/react"
 import { useEffect, useState } from "react"
 import { CircularProgressbarWithChildren } from 'react-circular-progressbar'
 import "react-circular-progressbar/dist/styles.css"
+import { FaPause, FaPlay } from "react-icons/fa"
 type SensorDisplayProps = {
     name: string
     url: string
@@ -10,6 +11,8 @@ type SensorDisplayProps = {
 export function SensorDisplay({ name, url }: SensorDisplayProps) {
     const [data, setData] = useState(0)
     const [isURLValid, setIsURLValid] = useState(false)
+    const [intervalId, setIntervalId] = useState<number | undefined>(undefined)
+    const [isPaused, setIsPaused] = useState(true)
     useEffect(() => {
         const validateUrl = async (): Promise<number | undefined> => {
             try {
@@ -21,8 +24,7 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
                 }
 
                 setIsURLValid(true);
-
-                return setInterval(handleGetData, 1000);
+                setIntervalId(setInterval(handleGetData, 1000));
             } catch (error) {
                 console.error(error);
                 return undefined;
@@ -51,7 +53,16 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
             console.log('error', error);
         }
     }
-
+    const handlePause = () => {
+        if (intervalId) {
+            clearInterval(intervalId);
+            setIntervalId(undefined);
+            setIsPaused(true);
+        } else {
+            setIntervalId(setInterval(handleGetData, 1000));
+            setIsPaused(false);
+        }
+    }
     return (
         <Card backgroundColor={'rgb(22,22,22)'} p={2}>
             {
@@ -73,6 +84,7 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
                             <Text color={'rgb(255,255,255)'}>
                                 {Math.round(data / 1024 * 100)}%
                             </Text>
+                            <IconButton onClick={handlePause} aria-label="" color='white' fontSize={'20'} isRound variant='none' icon={isPaused?<FaPause /> :<FaPlay />}></IconButton>
                         </CircularProgressbarWithChildren>
                     </CardBody>
                     :
