@@ -5,7 +5,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"time"
 
 	// "encoding/json"
 	"github.com/gin-contrib/cors"
@@ -142,17 +141,7 @@ func SendDoesWorkMessage(c *gin.Context) {
 
 func main() {
 	r := gin.Default()
-	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:4000"},
-		AllowMethods:     []string{"PUT", "GET", "POST", "PATCH"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		AllowOriginFunc: func(origin string) bool {
-			return origin == "https://github.com"
-		},
-		MaxAge: 12 * time.Hour,
-	}))
+	r.Use(cors.Default())
 
 	InitDatabase()
 	auth_route := r.Group("/auth")
