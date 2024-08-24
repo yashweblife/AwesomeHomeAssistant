@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -115,15 +116,10 @@ func RemoveUser(c *gin.Context) {
 }
 
 func SendRequestToDevice(c *gin.Context) {
-
-	var url string
-	if err := c.Bind(&url); err != nil {
-		log.Println("Error binding request body: ", err)
-		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+	type outputData struct {
+		Value int `json:"value"`
 	}
-	fmt.Println("Received request for device: ", url)
-	res, err := http.Get(url + "/value")
+	res, err := http.Get("http://192.168.0.29:81/value")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -131,8 +127,12 @@ func SendRequestToDevice(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	c.JSON(http.StatusOK, gin.H{"data": string(body)})
+	var data outputData
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.JSON(http.StatusOK, data)
 }
 
 func SendDoesWorkMessage(c *gin.Context) {
@@ -154,8 +154,8 @@ func main() {
 	}
 	device_route := r.Group("/device")
 	{
-		device_route.POST("/", SendDoesWorkMessage)
-		device_route.GET("value", SendDoesWorkMessage)
+		device_route.GET("/", SendDoesWorkMessage)
+		device_route.GET("value", SendRequestToDevice)
 	}
 	r.Run(PORT)
 }
