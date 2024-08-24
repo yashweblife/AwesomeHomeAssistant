@@ -121,7 +121,7 @@ func RegisterDevice(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 		return
 	}
-	RegisterDeviceToDB(uuid.New().String(), device.IP, device.Type, device.Name)
+	AddDeviceToDB(uuid.New().String(), device.URL, device.Name)
 	fmt.Println(device)
 	c.JSON(200, gin.H{"data": "Registered"})
 }
