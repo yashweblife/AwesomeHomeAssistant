@@ -115,6 +115,42 @@ func RemoveUser(c *gin.Context) {
 	c.JSON(200, gin.H{"data": didRemoveUser})
 }
 
+func RegisterDevice(c *gin.Context) {
+	var device Device
+	if err := c.ShouldBindJSON(&device); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
+	RegisterDeviceToDB(uuid.New().String(), device.IP, device.Type, device.Name)
+	fmt.Println(device)
+	c.JSON(200, gin.H{"data": "Registered"})
+}
+func DeleteDevice(c *gin.Context) {
+	var id string
+	if err := c.ShouldBindJSON(&id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
+	RemoveDeviceFromDB(id)
+	c.JSON(200, gin.H{"data": "Removed"})
+}
+func UpdateDevice(c *gin.Context) {
+}
+func GetDevice(c *gin.Context) {
+	var id string
+	if err := c.ShouldBindJSON(&id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return
+	}
+	var device Device
+	GetDeviceFromDB(id, &device)
+	c.JSON(200, gin.H{"data": device})
+}
+func GetDevices(c *gin.Context) {
+	var devices []Device
+	GetAllDevices(&devices)
+	c.JSON(200, gin.H{"data": devices})
+}
 func SendRequestToDevice(c *gin.Context) {
 	type outputData struct {
 		Value int `json:"value"`
@@ -156,6 +192,10 @@ func main() {
 	{
 		device_route.GET("/", SendDoesWorkMessage)
 		device_route.GET("value", SendRequestToDevice)
+		device_route.POST("register", RegisterDevice)
+		device_route.DELETE("delete", DeleteDevice)
+		device_route.GET("devices", GetDevices)
+		device_route.GET("device", GetDevice)
 	}
 	r.Run(PORT)
 }
