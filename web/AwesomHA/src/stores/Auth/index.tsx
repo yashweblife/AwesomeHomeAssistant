@@ -21,15 +21,10 @@ export default function AuthContextProvider({children}: {children: any}){
     const [isAuthenticated, setIsAuthenticated] = useState(false)
     const [userID, setUserID] = useState({})
     const handleLogin = async (email: string, password: string) => {
-        setIsAuthenticated(true)
-        return ("seseer")
         try {
             const res = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
                 mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
                 body: JSON.stringify({ email, password })
             });
 
@@ -43,15 +38,9 @@ export default function AuthContextProvider({children}: {children: any}){
         }
     }
     const handleSignup = async (name:string, email: string, password: string) => {
-        setIsAuthenticated(true)
-        return ("seseer")
         try {
             const response = await fetch("http://localhost:8080/auth/register", {
-                method: "POST",
-                mode: "no-cors",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                method: "POST", 
                 body: JSON.stringify({
                     name,
                     email,
@@ -62,8 +51,10 @@ export default function AuthContextProvider({children}: {children: any}){
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
-            return await response.json();
+            const output = await response.json();
+            setUserID(output)
+            setIsAuthenticated(true)
+            return true;
         } catch (error) {
             console.error(error);
             throw error;
