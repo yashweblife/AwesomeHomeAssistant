@@ -53,13 +53,14 @@ func AddUserToDB(id, name, email, password string, didCreate *bool) error {
 	*didCreate = true
 	return nil
 }
-func GetUserInfo(id string, email *string) {
-	err := DB.QueryRow("SELECT email from users WHERE id = ?", id).Scan(&email)
+func GetUserInfo(id string, email *string) error {
+	var output string
+	err := DB.QueryRow("SELECT email from users WHERE id = ?", id).Scan(&output)
 	if err != nil {
-		fmt.Println(err.Error())
-		return
+		return err
 	}
-	fmt.Println(email)
+	*email = output
+	return nil
 }
 func GetAllUsers(list []User) bool {
 	var rows *sql.Rows
@@ -82,8 +83,15 @@ func GetAllUsers(list []User) bool {
 	fmt.Println(list)
 	return (true)
 }
-func RemoveUser(id string) {}
-func RemoveAllUsers()      {}
+func RemoveUser(id string, didRemoveUser *bool) {
+	_, err := DB.Query("DELETE FROM users WHERE id = ?", id)
+	if err != nil {
+		*didRemoveUser = false
+		fmt.Println(err.Error())
+	}
+	*didRemoveUser = true
+}
+func RemoveAllUsers() {}
 func AuthenticateLoginAttempt(email, password string) bool {
 	return true
 }
