@@ -17,7 +17,7 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
         const validateUrl = async (): Promise<number | undefined> => {
             try {
                 const URL = url + "device/";
-                const response = await fetch(URL, { method: 'GET'});
+                const response = await fetch(URL, { method: 'GET' });
                 console.log(response)
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -40,7 +40,12 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const {value} = await response.json();
+            if (response.status === 204) {
+                setData(1024)
+
+                return
+            }
+            const { value } = await response.json();
             if (value === null) {
                 throw new Error('Received null value from server');
             }
@@ -84,7 +89,7 @@ export function SensorDisplay({ name, url }: SensorDisplayProps) {
                             <Text color={'rgb(255,255,255)'}>
                                 {Math.round(data / 1024 * 100)}%
                             </Text>
-                            <IconButton onClick={handlePause} aria-label="" color='white' fontSize={'20'} isRound variant='none' icon={isPaused?<FaPlay />:<FaPause />}></IconButton>
+                            <IconButton onClick={handlePause} aria-label="" color='white' fontSize={'20'} isRound variant='none' icon={isPaused ? <FaPlay /> : <FaPause />}></IconButton>
                         </CircularProgressbarWithChildren>
                     </CardBody>
                     :
