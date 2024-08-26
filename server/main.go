@@ -157,8 +157,10 @@ func SendRequestToDevice(c *gin.Context) {
 	}
 	res, err := http.Get("http://192.168.0.29:81/value")
 	if err != nil {
-		log.Fatal(err)
+		c.JSON(http.StatusNoContent, gin.H{"data": "No Host"})
+		return
 	}
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
