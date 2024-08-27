@@ -10,6 +10,10 @@ import (
 )
 
 func LoginUser(c *gin.Context) {
+	type AuthLoginType struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
 	var auth AuthLoginType
 	if err := c.Bind(&auth); err != nil {
 		log.Println("Error binding request body: ", err)
