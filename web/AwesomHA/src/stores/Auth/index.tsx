@@ -1,4 +1,5 @@
 import { createContext, useState } from "react";
+import { SERVER_URL } from "../../libs/utils";
 
 type AuthContext = {
     handleLogin: (email: string, password: string) => Promise<any>
@@ -22,7 +23,7 @@ export default function AuthContextProvider({children}: {children: any}){
     const [userID, setUserID] = useState({})
     const handleLogin = async (email: string, password: string) => {
         try {
-            const res = await fetch("http://localhost:8080/auth/login", {
+            const res = await fetch(`${SERVER_URL}/auth/login`, {
                 method: "POST",
                 mode: "no-cors",
                 body: JSON.stringify({ email, password })
@@ -39,7 +40,7 @@ export default function AuthContextProvider({children}: {children: any}){
     }
     const handleSignup = async (name:string, email: string, password: string) => {
         try {
-            const response = await fetch("http://localhost:8080/auth/register", {
+            const response = await fetch(`${SERVER_URL}/auth/register`, {
                 method: "POST", 
                 body: JSON.stringify({
                     name,

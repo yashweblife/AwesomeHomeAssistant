@@ -1,5 +1,6 @@
 import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import { useState } from "react";
+import { SERVER_URL } from "../../libs/utils";
 
 type AddDeviceModalProps = {
     isOpen: boolean
@@ -11,7 +12,7 @@ export default function AddDeviceModal({ isOpen, onClose }: AddDeviceModalProps)
 
     const checkIfURLIsValid = async () => {
         try {
-            const test = await fetch("http://localhost:8080/device/validity", {method:"GET", body: JSON.stringify({url: modalDeviceUrl})})
+            const test = await fetch(`${SERVER_URL}/device/validity`, {method:"GET", body: JSON.stringify({url: modalDeviceUrl})})
             const {isValid} = await test.json()
             return isValid
         } catch (error) {
@@ -27,7 +28,7 @@ export default function AddDeviceModal({ isOpen, onClose }: AddDeviceModalProps)
         try {
             const isValid = await checkIfURLIsValid()
             if (!isValid) {    
-                const test = await fetch("http://localhost:8080/device/register", {
+                const test = await fetch(`${SERVER_URL}/device/register`, {
                 method: "POST",
                 body: JSON.stringify(output),
             })
