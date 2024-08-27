@@ -29,3 +29,4 @@ export type Todo = {
     status: string
     date: string
 }
+export const SERVER_URL = "http://localhost:8080"

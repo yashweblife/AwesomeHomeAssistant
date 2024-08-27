@@ -25,7 +25,9 @@ export default function AddDeviceModal({ isOpen, onClose }: AddDeviceModalProps)
             url: modalDeviceUrl
         }
         try {
-            const test = await fetch("http://localhost:8080/device/register", {
+            const isValid = await checkIfURLIsValid()
+            if (!isValid) {    
+                const test = await fetch("http://localhost:8080/device/register", {
                 method: "POST",
                 body: JSON.stringify(output),
             })
@@ -33,6 +35,7 @@ export default function AddDeviceModal({ isOpen, onClose }: AddDeviceModalProps)
                 throw new Error("error")
             }
             onClose()
+        }
         } catch (error) {
         }
     }
