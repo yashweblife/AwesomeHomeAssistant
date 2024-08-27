@@ -47,14 +47,14 @@ func AddUser(c *gin.Context) {
 	userID := uuid.New().String()
 	fmt.Println("User ID: ", userID)
 	if err := c.Bind(&user); err != nil {
-		fmt.Errorf(err.Error())
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 		return
 	}
 	var didCreateUser bool
 	err := AddUserToDB(userID, user.Name, user.Email, user.Password, &didCreateUser)
 	if err != nil {
-		fmt.Errorf(err.Error())
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 		return
 	}
