@@ -4,6 +4,26 @@ import (
 	"database/sql"
 )
 
+var userScheme = `
+CREATE TABLE IF NOT EXIST USERS
+(
+id TEXT,
+name TEXT,
+email TEXT,
+password TEXT
+)
+`
+
+var deviceScheme = `
+CREATE TABLE IF NOT EXIST DEVICES
+(
+ID TEXT
+NAME TEXT
+URL TEXT
+OWNER TEXT
+)
+`
+
 func Initialize() error {
 
 	DB, err := sql.Open("sqlite3", "./AwesomeHA.db")
@@ -34,3 +54,7 @@ func CheckIfUserIsValid() {}
 func GetUserFromDB() {}
 
 func GetAllUsers() {}
+
+func AddDeviceToDB() {}
+
+func RemoveDeviceFromDB() {}
