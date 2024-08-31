@@ -24,3 +24,13 @@ func Initialize() error {
 	}
 	return nil
 }
+
+func AddUserToDB() {}
+
+func RemoveUserFromDB() {}
+
+func CheckIfUserIsValid() {}
+
+func GetUserFromDB() {}
+
+func GetAllUsers() {}
