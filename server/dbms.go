@@ -68,26 +68,20 @@ func GetUserInfo(id string, email *string) error {
 	*email = output
 	return nil
 }
-func GetAllUsers(list []User) bool {
-	var rows *sql.Rows
-	var err error
-
-	rows, err = DB.Query("SELECT * from users")
+func GetAllUsers(list []User) error {
+	rows, err := DB.Query("SELECT * from users")
 	if err != nil {
-		fmt.Println(err.Error())
-		return false
+		return err
 	}
 	for rows.Next() {
 		var user User
 		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 		if err != nil {
-			fmt.Println(err.Error())
-			return false
+			return err
 		}
 		list = append(list, user)
 	}
-	fmt.Println(list)
-	return (true)
+	return nil
 }
 func EditUser(id, name, email, password string) bool {
 
