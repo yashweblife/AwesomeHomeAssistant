@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -11,62 +10,87 @@ import (
 	"github.com/google/uuid"
 )
 
-func RegisterDevice(c *gin.Context) {
+func RegisterDevice(c *gin.Context) error {
 	var device Device
 	if err := c.ShouldBindJSON(&device); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
-	AddDeviceToDB(uuid.New().String(), device.URL, device.Name)
-	fmt.Println(device)
+	err := AddDeviceToDB(uuid.New().String(), device.URL, device.Name)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": "Registered"})
+	return nil
 }
-func DeleteDevice(c *gin.Context) {
+func DeleteDevice(c *gin.Context) error {
 	var id string
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
-	RemoveDeviceFromDB(id)
+	err := RemoveDeviceFromDB(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": "Removed"})
+	return nil
 }
-func UpdateDevice(c *gin.Context) {
+func UpdateDevice(c *gin.Context) error {
+	return nil
 }
-func GetDevice(c *gin.Context) {
+func GetDevice(c *gin.Context) error {
 	var id string
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	var device Device
-	GetDeviceFromDB(id, &device)
+	err := GetDeviceFromDB(id, &device)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": device})
+	return nil
 }
-func GetDevices(c *gin.Context) {
+func GetDevices(c *gin.Context) error {
 	var devices []Device
-	GetAllDevices(&devices)
+	err := GetAllDevices(&devices)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": devices})
+	return nil
 }
-func SendRequestToDevice(c *gin.Context) {
+func SendRequestToDevice(c *gin.Context) error {
 	type outputData struct {
 		Value int `json:"value"`
 	}
 	res, err := http.Get("http://192.168.0.29:81/value")
 	if err != nil {
 		c.JSON(http.StatusNoContent, gin.H{"data": "No Host"})
-		return
+		return err
 	}
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Fatal(err)
+		c.JSON(http.StatusNoContent, gin.H{"data": "No Host"})
+		return err
 	}
 	var data outputData
 	err = json.Unmarshal(body, &data)
 	if err != nil {
 		log.Fatal(err)
+		c.JSON(http.StatusNoContent, gin.H{"data": "No Host"})
+		return err
 	}
 	c.JSON(http.StatusOK, data)
+	return nil
 }
 
 func SendDoesWorkMessage(c *gin.Context) {
