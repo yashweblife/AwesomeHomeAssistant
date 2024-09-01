@@ -83,34 +83,35 @@ func GetAllUsers(list []User) error {
 	}
 	return nil
 }
-func EditUser(id, name, email, password string) bool {
+func EditUser(id, name, email, password string) error {
 
-	return true
+	return nil
 }
-func RemoveUserFromDB(id string, didRemoveUser *bool) {
+func RemoveUserFromDB(id string, didRemoveUser *bool) error {
 	stmt, err := DB.Prepare("DELETE FROM users WHERE id = ?")
 	if err != nil {
 		*didRemoveUser = false
-		fmt.Println(err.Error())
+		return err
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec(id)
 	if err != nil {
 		*didRemoveUser = false
-		fmt.Println(err.Error())
+		return err
 	}
 
 	affected, err := result.RowsAffected()
 	if err != nil {
 		*didRemoveUser = false
-		fmt.Println(err.Error())
+		return err
 	}
 
 	if affected == 0 {
 		*didRemoveUser = false
 	}
 	*didRemoveUser = true
+	return nil
 }
 func RemoveAllUsers() {
 	stmt, err := DB.Prepare("DELETE * FROM users")
