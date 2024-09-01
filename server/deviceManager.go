@@ -10,7 +10,10 @@ import (
 	"github.com/google/uuid"
 )
 
-func RegisterDevice(c *gin.Context) error {
+type DeviceManager struct {
+}
+
+func (dm *DeviceManager) RegisterDevice(c *gin.Context) error {
 	var device Device
 	if err := c.ShouldBindJSON(&device); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
@@ -24,7 +27,7 @@ func RegisterDevice(c *gin.Context) error {
 	c.JSON(200, gin.H{"data": "Registered"})
 	return nil
 }
-func DeleteDevice(c *gin.Context) error {
+func (dm *DeviceManager) DeleteDevice(c *gin.Context) error {
 	var id string
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
@@ -38,10 +41,10 @@ func DeleteDevice(c *gin.Context) error {
 	c.JSON(200, gin.H{"data": "Removed"})
 	return nil
 }
-func UpdateDevice(c *gin.Context) error {
+func (dm *DeviceManager) UpdateDevice(c *gin.Context) error {
 	return nil
 }
-func GetDevice(c *gin.Context) error {
+func (dm *DeviceManager) GetDevice(c *gin.Context) error {
 	var id string
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
@@ -56,7 +59,7 @@ func GetDevice(c *gin.Context) error {
 	c.JSON(200, gin.H{"data": device})
 	return nil
 }
-func GetDevices(c *gin.Context) error {
+func (dm *DeviceManager) GetDevices(c *gin.Context) error {
 	var devices []Device
 	err := GetAllDevices(&devices)
 	if err != nil {
@@ -66,7 +69,7 @@ func GetDevices(c *gin.Context) error {
 	c.JSON(200, gin.H{"data": devices})
 	return nil
 }
-func SendRequestToDevice(c *gin.Context) error {
+func (dm *DeviceManager) SendRequestToDevice(c *gin.Context) error {
 	type outputData struct {
 		Value int `json:"value"`
 	}
@@ -93,6 +96,6 @@ func SendRequestToDevice(c *gin.Context) error {
 	return nil
 }
 
-func SendDoesWorkMessage(c *gin.Context) {
+func (dm *DeviceManager) SendDoesWorkMessage(c *gin.Context) {
 	c.JSON(200, gin.H{"data": "Works!"})
 }
