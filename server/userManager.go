@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func LoginUser(c *gin.Context) {
+func LoginUser(c *gin.Context) error {
 	type AuthLoginType struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -18,67 +19,77 @@ func LoginUser(c *gin.Context) {
 	if err := c.Bind(&auth); err != nil {
 		log.Println("Error binding request body: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	if auth.Email == "" || auth.Password == "" {
 		log.Println("Error: Email and password are required")
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Email and password are required"})
-		return
+		return errors.New("Email and password are required")
 	}
 	log.Println("Received request for login: ", auth)
-	test := AuthenticateLoginAttempt(auth.Email, auth.Password)
-	if !test {
+	err := AuthenticateLoginAttempt(auth.Email, auth.Password)
+	if err != nil {
 		log.Println("Error: Authentication returned null")
 		c.JSON(http.StatusInternalServerError, gin.H{"data": "Authentication returned null"})
-		return
+		return errors.New("Authentication returned null")
 	}
-	log.Println("Response from authentication: ", test)
-	c.JSON(http.StatusOK, gin.H{"data": test})
+	log.Println("Response from authentication: ", err)
+	c.JSON(http.StatusOK, gin.H{"data": "Success"})
+	return nil
 }
-func AddUser(c *gin.Context) {
+func AddUser(c *gin.Context) error {
 	var user User
 	userID := uuid.New().String()
 	fmt.Println("User ID: ", userID)
 	if err := c.Bind(&user); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	var didCreateUser bool
 	err := AddUserToDB(userID, user.Name, user.Email, user.Password, &didCreateUser)
 	if err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	fmt.Println("User created: ", didCreateUser)
 	if !didCreateUser {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return errors.New("Bad Request")
 	}
 	c.JSON(http.StatusOK, gin.H{"data": userID})
+	return nil
 }
-func GetUsers(c *gin.Context) {
+func GetUsers(c *gin.Context) error {
 	var users []User
-	valid := GetAllUsers(users)
-	fmt.Println(valid)
+	err := GetAllUsers(users)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": users})
+	return nil
 }
-func GetUser(c *gin.Context) {
+func GetUser(c *gin.Context) error {
 	type input struct {
 		Id string `json:"id"`
 	}
 	var id input
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	var userEmail string
-	GetUserInfo(id.Id, &userEmail)
-	fmt.Println("userEmail: ", userEmail)
+	err := GetUserInfo(id.Id, &userEmail)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": userEmail})
+	return nil
 }
-func EditUserInfo(c *gin.Context) {
+func EditUserInfo(c *gin.Context) error {
 
 	type input struct {
 		Id       string `json:"id"`
@@ -89,11 +100,12 @@ func EditUserInfo(c *gin.Context) {
 	var id input
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	c.JSON(200, gin.H{"data": "Edited"})
+	return nil
 }
-func RemoveUser(c *gin.Context) {
+func RemoveUser(c *gin.Context) error {
 
 	type input struct {
 		Id string `json:"id"`
@@ -101,9 +113,14 @@ func RemoveUser(c *gin.Context) {
 	var id input
 	if err := c.ShouldBindJSON(&id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
-		return
+		return err
 	}
 	var didRemoveUser bool
-	RemoveUserFromDB(id.Id, &didRemoveUser)
+	err := RemoveUserFromDB(id.Id, &didRemoveUser)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
+		return err
+	}
 	c.JSON(200, gin.H{"data": didRemoveUser})
+	return nil
 }
