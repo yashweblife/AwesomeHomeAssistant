@@ -136,11 +136,13 @@ func AuthenticateLoginAttempt(email, password string) error {
 }
 
 // Devices
-func AddDeviceToDB(id, url, name string) bool {
+func AddDeviceToDB(id, url, name string) error {
 	_, err := DB.Exec("INSERT INTO DEVICES (id, url, name) VALUES (?,?,?)", id, url, name)
 	if err != nil {
-		return false
+		return err
 	}
+
+	return nil
 }
 func GetDeviceFromDB(id string, device *Device) error {
 
