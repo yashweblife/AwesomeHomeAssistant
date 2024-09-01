@@ -10,19 +10,27 @@ import (
 
 var DB *sql.DB
 
-func InitDatabase() {
+func InitDatabase() error {
+	fmt.Println("Connecting to database...")
 	DB, err := sql.Open("sqlite3", "./AwesomeHA.db")
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Fatal(err.Error())
+		return err
 	}
+	fmt.Println("Connected to database\nCreating tables:\tUSERS\tDEVICES\n")
 	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT)")
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
+	fmt.Println("USERS table created")
 	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS DEVICES (id TEXT, url TEXT, name TEXT)")
 	if err != nil {
 		log.Fatal(err)
+		return err
 	}
+	fmt.Println("DEVICES table created")
+	return nil
 }
 
 // Authentication
