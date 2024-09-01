@@ -113,56 +113,66 @@ func RemoveUserFromDB(id string, didRemoveUser *bool) error {
 	*didRemoveUser = true
 	return nil
 }
-func RemoveAllUsers() {
+func RemoveAllUsers() error {
 	stmt, err := DB.Prepare("DELETE * FROM users")
 	if err != nil {
-		fmt.Println(err.Error())
+		return err
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec()
 	if err != nil {
-		fmt.Println(err.Error())
+		return err
 	}
 
-	affected, err := result.RowsAffected()
+	_, err = result.RowsAffected()
 	if err != nil {
-		fmt.Println(err.Error())
+		return err
 	}
-	fmt.Println(affected)
-	fmt.Println("All users removed")
+	return nil
 }
-func AuthenticateLoginAttempt(email, password string) bool {
-	return true
+func AuthenticateLoginAttempt(email, password string) error {
+	return nil
 }
 
 // Devices
-func AddDeviceToDB(id, url, name string) {
+func AddDeviceToDB(id, url, name string) bool {
 	_, err := DB.Exec("INSERT INTO DEVICES (id, url, name) VALUES (?,?,?)", id, url, name)
 	if err != nil {
-		fmt.Println(err.Error())
+		return false
 	}
 }
-func GetDeviceFromDB(id string, device *Device) {}
-func GetAllDevices(list *[]Device) {
+func GetDeviceFromDB(id string, device *Device) error {
+
+	return nil
+}
+func GetAllDevices(list *[]Device) error {
 
 	*list = []Device{}
 
 	rows, err := DB.Query("SELECT * from devices")
 	if err != nil {
 		fmt.Println(err.Error())
-		return
+		return err
 	}
 	for rows.Next() {
 		var device Device
 		err := rows.Scan(&device.ID, &device.URL, &device.Name)
 		if err != nil {
 			fmt.Println(err.Error())
-			return
+			return err
 		}
 		*list = append(*list, device)
 	}
 	fmt.Println(*list)
+
+	return nil
 }
-func RemoveDeviceFromDB(id string) {}
-func RemoveAllDevices()            {}
+func RemoveDeviceFromDB(id string) error {
+
+	return nil
+}
+func RemoveAllDevices() error {
+
+	return nil
+}
