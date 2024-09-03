@@ -9,7 +9,10 @@ import (
 	"github.com/google/uuid"
 )
 
-func LoginUser(c *gin.Context) {
+type UserManager struct {
+}
+
+func (um *UserManager) LoginUser(c *gin.Context) {
 	type AuthLoginType struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -32,7 +35,7 @@ func LoginUser(c *gin.Context) {
 	log.Println("Response from authentication: ", err)
 	c.JSON(http.StatusOK, gin.H{"data": "Success"})
 }
-func AddUser(c *gin.Context) {
+func (um *UserManager) AddUser(c *gin.Context) {
 	var user User
 	userID := uuid.New().String()
 	fmt.Println("User ID: ", userID)
@@ -52,7 +55,7 @@ func AddUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": userID})
 }
-func GetUsers(c *gin.Context) {
+func (um *UserManager) GetUsers(c *gin.Context) {
 	var users []User
 	err := GetAllUsers(users)
 	if err != nil {
@@ -60,7 +63,7 @@ func GetUsers(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"data": users})
 }
-func GetUser(c *gin.Context) {
+func (um *UserManager) GetUser(c *gin.Context) {
 	type input struct {
 		Id string `json:"id"`
 	}
@@ -75,7 +78,7 @@ func GetUser(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"data": userEmail})
 }
-func EditUserInfo(c *gin.Context) {
+func (um *UserManager) EditUserInfo(c *gin.Context) {
 
 	type input struct {
 		Id       string `json:"id"`
@@ -89,7 +92,7 @@ func EditUserInfo(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{"data": "Edited"})
 }
-func RemoveUser(c *gin.Context) {
+func (um *UserManager) RemoveUser(c *gin.Context) {
 
 	type input struct {
 		Id string `json:"id"`
