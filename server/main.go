@@ -11,14 +11,15 @@ func main() {
 	r := gin.Default()
 	r.Use(cors.Default())
 	dm := DeviceManager{}
+	um := UserManager{}
 	InitDatabase()
 	auth_route := r.Group("/auth")
 	{
-		auth_route.POST("login", LoginUser)
-		auth_route.POST("register", AddUser)
-		auth_route.GET("users", GetUsers)
-		auth_route.GET("user", GetUser)
-		auth_route.DELETE("user", RemoveUser)
+		auth_route.POST("login", um.LoginUser)
+		auth_route.POST("register", um.AddUser)
+		auth_route.GET("users", um.GetUsers)
+		auth_route.GET("user", um.GetUser)
+		auth_route.DELETE("user", um.RemoveUser)
 	}
 	device_route := r.Group("/device")
 	{
