@@ -17,7 +17,7 @@ func InitDatabase() error {
 		log.Fatal(err.Error())
 		return err
 	}
-	fmt.Println("Connected to database\nCreating tables:\tUSERS\tDEVICES\n")
+	fmt.Print("Connected to database\nCreating tables:\tUSERS\tDEVICES\n")
 	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT)")
 	if err != nil {
 		log.Fatal(err)
