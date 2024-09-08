@@ -37,7 +37,7 @@ func InitDatabase() error {
 func AddUserToDB(id, name, email, password string, didCreate *bool) error {
 	var count int
 	fmt.Println("INSIDE ADD USER TO DB", id, email)
-	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE id = ? AND email = ?", id, email).Scan(&count)
+	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE email = ?", email).Scan(&count)
 	if err != nil {
 		return err
 	}
