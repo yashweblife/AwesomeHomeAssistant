@@ -36,14 +36,20 @@ func (um *UserManager) LoginUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": "Success"})
 }
 func (um *UserManager) AddUser(c *gin.Context) {
-	var user User
+	type UserData struct {
+		Email   string `json:"email"`
+		Name    string `json:"name"`
+		Password string `json:"password"`
+	}
+	var user UserData
 	userID := uuid.New().String()
-	fmt.Println("User ID: ", userID)
-	if err := c.Bind(&user); err != nil {
+	fmt.Println("User ID::::::::: ", userID)
+	if err := c.BindJSON(&user); err != nil {
 		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 	}
 	var didCreateUser bool
+	fmt.Println("User: ", user)
 	err := AddUserToDB(userID, user.Name, user.Email, user.Password, &didCreateUser)
 	if err != nil {
 		fmt.Println(err)
