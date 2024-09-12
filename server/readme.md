@@ -23,3 +23,10 @@ Files that follow `*Manager.go` format are used as controllers between the datab
 /device/register - POST
 /device/ - DELETE
 /device/devices - GET
+
+### TODO's
+
+- [ ] Setup a DB server
+- [ ] Setup an API server
+- [ ] Setup a auth server
+- [ ] Setup device communication 
