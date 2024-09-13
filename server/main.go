@@ -13,6 +13,7 @@ func main() {
 	dm := DeviceManager{}
 	um := UserManager{}
 	InitDatabase()
+	r.GET("/", dm.SendDoesWorkMessage)
 	auth_route := r.Group("/auth")
 	{
 		auth_route.POST("login", um.LoginUser)
