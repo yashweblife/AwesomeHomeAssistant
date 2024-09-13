@@ -40,7 +40,7 @@ func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
 	return id, nil
 }
 
-func (d *DBMS) AddDeviceToDB(url, name string) (string, error) {
+func (d *DBMS) AddDeviceToDB(user_id, url, name string) (string, error) {
 	// TODO: add checker for if the device already exists
 	// TODO: add validator for if the device was created
 	id := uuid.New().String()
@@ -48,5 +48,6 @@ func (d *DBMS) AddDeviceToDB(url, name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	_, err = DB.Query("UPDATE USERS SET DEVICES = JSON_ARRAY_APPEND(DEVICES, '$', ?) WHERE ID = ?", id, user_id)
 	return id, nil
 }
