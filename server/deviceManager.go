@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"io"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -68,13 +67,11 @@ func (dm *DeviceManager) SendRequestToDevice(c *gin.Context) {
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal(err)
 		c.JSON(http.StatusNoContent, gin.H{"data": "No Host"})
 	}
 	var data outputData
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		log.Fatal(err)
 		c.JSON(http.StatusNoContent, gin.H{"data": "No Host"})
 	}
 	c.JSON(http.StatusOK, data)
