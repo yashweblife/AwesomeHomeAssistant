@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -19,20 +17,15 @@ func (um *UserManager) LoginUser(c *gin.Context) {
 	}
 	var auth AuthLoginType
 	if err := c.Bind(&auth); err != nil {
-		log.Println("Error binding request body: ", err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 	}
 	if auth.Email == "" || auth.Password == "" {
-		log.Println("Error: Email and password are required")
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Email and password are required"})
 	}
-	log.Println("Received request for login: ", auth)
 	err := AuthenticateLoginAttempt(auth.Email, auth.Password)
 	if err != nil {
-		log.Println("Error: Authentication returned null")
 		c.JSON(http.StatusInternalServerError, gin.H{"data": "Authentication returned null"})
 	}
-	log.Println("Response from authentication: ", err)
 	c.JSON(http.StatusOK, gin.H{"data": "Success"})
 }
 func (um *UserManager) AddUser(c *gin.Context) {
@@ -43,19 +36,14 @@ func (um *UserManager) AddUser(c *gin.Context) {
 	}
 	var user UserData
 	userID := uuid.New().String()
-	fmt.Println("User ID::::::::: ", userID)
 	if err := c.BindJSON(&user); err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 	}
 	var didCreateUser bool
-	fmt.Println("User: ", user)
 	err := AddUserToDB(userID, user.Name, user.Email, user.Password, &didCreateUser)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 	}
-	fmt.Println("User created: ", didCreateUser)
 	if !didCreateUser {
 		c.JSON(http.StatusBadRequest, gin.H{"data": "Bad Request"})
 	}
