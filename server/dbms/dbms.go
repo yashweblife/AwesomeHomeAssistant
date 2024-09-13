@@ -39,3 +39,14 @@ func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
 	}
 	return id, nil
 }
+
+func (d *DBMS) AddDeviceToDB(url, name string) (string, error) {
+	// TODO: add checker for if the device already exists
+	// TODO: add validator for if the device was created
+	id := uuid.New().String()
+	_, err := DB.Query("INSERT INTO DEVICES (ID TEXT, URL TEXT, NAME TEXT, COMMANDS TEXT) VALUES (?,?,?,?)", id, url, name, "{}")
+	if err != nil {
+		return "", err
+	}
+	return id, nil
+}
