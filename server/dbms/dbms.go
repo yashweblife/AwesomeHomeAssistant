@@ -29,6 +29,8 @@ func (d *DBMS) Init() error {
 }
 
 func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
+	// TODO: add a checker for if the user already exists
+	// TODO: add a validator for if the user was created
 	id := uuid.New().String()
 	_, err := DB.Query("INSERT INTO USERS (ID TEXT, EMAIL TEXT, NAME TEXT, PASSWORD, TEXT, DEVICES TEXT) VALUES (?,?,?,?,?)",
 		id, email, name, password, "[]")
