@@ -2,6 +2,7 @@ package dbms
 
 import (
 	"database/sql"
+	"errors"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -31,7 +32,10 @@ func (d *DBMS) Init() error {
 func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
 	// TODO: add a checker for if the user already exists
 	var count int
-	_, err := DB.Query("SELECT COUNT(*) FROM USERS WHERE EMAIL=?", email).Scan(&count)
+	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE EMAIL= ? ", email).Scan(&count)
+	if count != 0 {
+		return "", errors.New("Email Already exists")
+	}
 
 	// TODO: add a validator for if the user was created
 
