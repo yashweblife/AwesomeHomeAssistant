@@ -73,9 +73,23 @@ func (d *DBMS) AddDeviceToDB(user_id, url, name string) (string, error) {
 	}
 	// TODO: add validator for if the device was created
 	id := uuid.New().String()
-	_, err := DB.Query("INSERT INTO DEVICES (ID TEXT, URL TEXT, NAME TEXT, COMMANDS TEXT) VALUES (?,?,?,?)", id, url, name, "{}")
+	_, err = DB.Exec("INSERT INTO DEVICES (ID TEXT, URL TEXT, NAME TEXT, COMMANDS TEXT) VALUES (?,?,?,?)", id, url, name, "{}")
 	if err != nil {
 		return "", err
+	}
+	type Device struct {
+		id       string
+		url      string
+		name     string
+		commands string
+	}
+	var device Device
+	err = DB.QueryRow("SELECT * FROM DEVICES WHERE ID = ?", id).Scan(&device.id, &device.url, &device.name, &device.commands)
+	if err != nil {
+		return "", err
+	}
+	if device.url != url {
+		return "", errors.New("Failed to create device")
 	}
 	_, err = DB.Query("UPDATE USERS SET DEVICES = JSON_ARRAY_APPEND(DEVICES, '$', ?) WHERE ID = ?", id, user_id)
 	return id, nil
