@@ -44,6 +44,21 @@ func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	type User struct {
+		name     string
+		id       string
+		email    string
+		password string
+		devices  string
+	}
+	var user User
+	err = DB.QueryRow("SELECT * FROM USERS WHERE ID = ?", id).Scan(&user.id, &user.name, &user.email, &user.password, &user.devices)
+	if err != nil {
+		return "", err
+	}
+	if user.email != email {
+		return "", errors.New("Failed to create user")
+	}
 	return id, nil
 }
 
