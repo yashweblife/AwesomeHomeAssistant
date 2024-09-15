@@ -63,7 +63,14 @@ func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
 }
 
 func (d *DBMS) AddDeviceToDB(user_id, url, name string) (string, error) {
-	// TODO: add checker for if the device already exists
+	var count int
+	err := DB.QueryRow("SELECT COUNT(*) FROM DEVICES WHERE URL = ?", url).Scan(&count)
+	if err != nil {
+		return "", err
+	}
+	if count != 0 {
+		return "", errors.New("Device already exists")
+	}
 	// TODO: add validator for if the device was created
 	id := uuid.New().String()
 	_, err := DB.Query("INSERT INTO DEVICES (ID TEXT, URL TEXT, NAME TEXT, COMMANDS TEXT) VALUES (?,?,?,?)", id, url, name, "{}")
