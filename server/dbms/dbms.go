@@ -30,8 +30,8 @@ func (d *DBMS) Init() error {
 
 func (d *DBMS) AddUserToDB(email, password, name string) (string, error) {
 	// TODO: add a checker for if the user already exists
-
-	_, err := DB.Query("SELECT COUNT(*) FROM USERS WHERE EMAIL=?", email)
+	var count int
+	_, err := DB.Query("SELECT COUNT(*) FROM USERS WHERE EMAIL=?", email).Scan(&count)
 
 	// TODO: add a validator for if the user was created
 
