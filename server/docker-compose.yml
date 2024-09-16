@@ -1,7 +1,0 @@
-version: '0.0.1'
-services:
-  server:
-    build: .
-    command: go run .
-    ports:
-      - 8080:8080
