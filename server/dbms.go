@@ -175,6 +175,5 @@ func RemoveDeviceFromDB(id string) error {
 	return nil
 }
 func RemoveAllDevices() error {
-
 	return nil
 }

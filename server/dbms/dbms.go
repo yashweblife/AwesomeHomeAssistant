@@ -94,3 +94,8 @@ func (d *DBMS) AddDeviceToDB(user_id, url, name string) (string, error) {
 	_, err = DB.Query("UPDATE USERS SET DEVICES = JSON_ARRAY_APPEND(DEVICES, '$', ?) WHERE ID = ?", id, user_id)
 	return id, nil
 }
+
+func (d *DBMS) ValidateUser(email, password string) (string, error) {
+
+	return "", nil
+}
