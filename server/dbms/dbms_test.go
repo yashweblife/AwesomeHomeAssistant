@@ -4,14 +4,22 @@ import (
 	"testing"
 )
 
-func TestDBMS(t *testing.T){
+func TestDBMS(t *testing.T) {
 	dbms := DBMS{}
-	t.Run("Init", func (t *testing.T) {
+	t.Run("Init", func(t *testing.T) {
 		err := dbms.Init()
 		if err != nil {
-			t.Errorf("Init() error = %v", err)
+			t.Fail()
 		}
-
-		t.Log("Init() ok")
+	})
+	t.Run("AddUserToDB", func(t *testing.T) {
+		id, err := dbms.AddUserToDB("test", "test", "test")
+		if err != nil {
+			t.Fail()
+		}
+		if id == "" {
+			t.Fail()
+		}
+		t.Log(id)
 	})
 }
