@@ -28,6 +28,21 @@ func (iot *IOT) Init() error {
 	return nil
 }
 func (iot *IOT) CheckIfOnline() (bool, error) {
+	if iot.url == "" {
+		iot.url = "http://192.168.0.20:81/"
+	}
+	client := http.DefaultClient
+	req, err := http.NewRequest("GET", iot.url, nil)
+	if err != nil {
+		return false, err
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return false, err
+	}
+	if res.StatusCode != 200 {
+		return false, nil
+	}
 	return true, nil
 }
 func (iot *IOT) GetCommands() (string, error) {
