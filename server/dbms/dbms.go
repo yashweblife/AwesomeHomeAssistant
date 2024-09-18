@@ -11,14 +11,6 @@ import (
 type DBMS struct {
 }
 
-type User struct {
-	ID       string
-	Name     string
-	Email    string
-	Password string
-	Devices  string
-}
-
 var DB *sql.DB
 
 func (d *DBMS) Init() error {
