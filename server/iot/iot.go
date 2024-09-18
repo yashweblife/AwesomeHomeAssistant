@@ -1,7 +1,9 @@
 package iot
 
 import (
+	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 )
 
@@ -73,7 +75,17 @@ func (iot *IOT) GetCommands() ([]DeviceCommand, error) {
 	if res.StatusCode != 200 {
 		return []DeviceCommand{}, errors.New("Failed to connect to IOT")
 	}
-	return []DeviceCommand{}, nil
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return []DeviceCommand{}, err
+	}
+	var data DeviceInfo
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return []DeviceCommand{}, err
+	}
+	return data.Commands, nil
 }
 func (iot *IOT) CallCommand(name string) (string, error) {
 	return "{}", nil
