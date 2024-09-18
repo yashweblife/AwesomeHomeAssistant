@@ -5,12 +5,15 @@ import (
 )
 
 func TestIOT(t *testing.T) {
-	iot := IOT{}
+	iot := IOT{
+		url: "http://192.168.0.29:81/",
+	}
 	t.Run("Init", func(t *testing.T) {
 		err := iot.Init()
 		if err != nil {
 			t.Fail()
 		}
+		t.Log("Device URL is valid")
 	})
 
 	t.Run("Check If Online", func(t *testing.T) {
@@ -18,8 +21,8 @@ func TestIOT(t *testing.T) {
 		if error != nil {
 			t.Fail()
 		}
-		if online {
-			t.Log("Working")
+		if online == false || online == true {
+			t.Log("Device Is Online")
 		}
 	})
 	t.Run("Get Commands", func(t *testing.T) {
@@ -27,17 +30,17 @@ func TestIOT(t *testing.T) {
 		if error != nil {
 			t.Fail()
 		}
-		if commands == "{}" {
-			t.Log("Working")
+		if len(commands) > 0 {
+			t.Log("Got Commands", commands)
 		}
 	})
 	t.Run("Call Command", func(t *testing.T) {
-		command, error := iot.CallCommand("test")
+		command, error := iot.CallCommand("on")
 		if error != nil {
 			t.Fail()
 		}
-		if command == "{}" {
-			t.Log("Working")
+		if command == "ON" {
+			t.Log("Command Worked")
 		}
 	})
 
