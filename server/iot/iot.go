@@ -58,6 +58,9 @@ type DeviceInfo struct {
 	IP       string          `json:"ip"`
 	Commands []DeviceCommand `json:"commands"`
 }
+type DeviceResponse struct {
+	Data string `json:"data"`
+}
 
 func (iot *IOT) GetCommands() ([]DeviceCommand, error) {
 	if iot.url == "" {
@@ -88,5 +91,30 @@ func (iot *IOT) GetCommands() ([]DeviceCommand, error) {
 	return data.Commands, nil
 }
 func (iot *IOT) CallCommand(name string) (string, error) {
-	return "{}", nil
+	if iot.url == "" {
+		iot.url = "http://192.168.0.20:81/"
+	}
+	client := http.DefaultClient
+	req, err := http.NewRequest("POST", iot.url+name, nil)
+	if err != nil {
+		return "{}", err
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return "{}", err
+	}
+	if res.StatusCode != 200 {
+		return "{}", errors.New("Failed to connect to IOT")
+	}
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "{}", err
+	}
+	var data DeviceResponse
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return "{}", err
+	}
+	return data.Data, nil
 }
