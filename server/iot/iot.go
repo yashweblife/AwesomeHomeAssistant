@@ -7,10 +7,6 @@ import (
 	"net/http"
 )
 
-type IOT struct {
-	url string
-}
-
 func (iot *IOT) Init() error {
 	if iot.url == "" {
 		iot.url = "http://192.168.0.20:81/"
@@ -47,21 +43,6 @@ func (iot *IOT) CheckIfOnline() (bool, error) {
 	}
 	return true, nil
 }
-
-type DeviceCommand struct {
-	Name string `json:"name"`
-	info string `json:"info"`
-}
-type DeviceInfo struct {
-	Type     string          `json:"type"`
-	Info     string          `json:"info"`
-	IP       string          `json:"ip"`
-	Commands []DeviceCommand `json:"commands"`
-}
-type DeviceResponse struct {
-	Data string `json:"data"`
-}
-
 func (iot *IOT) GetCommands() ([]DeviceCommand, error) {
 	if iot.url == "" {
 		iot.url = "http://192.168.0.20:81/"
