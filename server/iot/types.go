@@ -1,5 +1,8 @@
 package iot
 
+type IOT struct {
+	url string
+}
 type DeviceCommand struct {
 	Name string `json:"name"`
 	Info string `json:"info"`
