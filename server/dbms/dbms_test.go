@@ -13,7 +13,6 @@ func TestDBMS(t *testing.T) {
 			t.Fail()
 		}
 	})
-
 	t.Run("Add User", func(t *testing.T) {
 		userID, err := dbms.AddUser("test", "test", "test")
 		if err != nil {
