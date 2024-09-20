@@ -16,9 +16,7 @@ func TestDBMS(t *testing.T) {
 	t.Run("Add User", func(t *testing.T) {
 		userID, err := dbms.AddUser("test", "test", "test")
 		if err != nil {
-			t.Log("\n\n\n\n")
 			t.Log(err)
-			t.Log("\n\n\n\n")
 			t.Fail()
 		}
 		user.ID = userID
@@ -32,6 +30,7 @@ func TestDBMS(t *testing.T) {
 		user, err := dbms.GetUser(user.ID)
 		if err != nil {
 			t.Fail()
+			t.Log(err)
 		}
 		t.Log("Got User", user)
 	})
