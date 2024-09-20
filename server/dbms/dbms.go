@@ -2,7 +2,6 @@ package dbms
 
 import (
 	"database/sql"
-	"fmt"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -18,12 +17,6 @@ func (d *DBMS) Init() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(DB.Stats())
-	err = DB.Ping()
-	if err != nil {
-		return err
-	}
-
 	defer DB.Close()
 	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT, devices TEXT)")
 	if err != nil {
@@ -37,21 +30,19 @@ func (d *DBMS) Init() error {
 }
 
 func (d *DBMS) AddUser(name, email, password string) (string, error) {
-	err := DB.Ping()
-	if err != nil {
-		return "", err
-	}
-	tx, err := DB.Begin()
-	if err != nil {
-		return "", err
-	}
 	userID := uuid.New().String()
-	_, err = tx.Exec("INSERT INTO USERS(id, name, email, password, devices) VALUES (?, ?, ?, ?, ?)", userID, name, email, password, "{}")
+	var count int
+	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE id = ?", userID).Scan(count)
 	if err != nil {
 		return "", err
 	}
-	tx.Commit()
-	DB.Close()
+	if count > 0 {
+		return "", nil
+	}
+	_, err = DB.Exec("INSERT INTO USERS (id, name, email, password) VALUES (?,?,?,?)", userID, name, email, password)
+	if err != nil {
+		return "", err
+	}
 	return userID, nil
 }
 
