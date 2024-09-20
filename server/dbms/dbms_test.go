@@ -16,7 +16,9 @@ func TestDBMS(t *testing.T) {
 	t.Run("Add User", func(t *testing.T) {
 		userID, err := dbms.AddUser("test", "test", "test")
 		if err != nil {
+			t.Log("\n\n\n\n")
 			t.Log(err)
+			t.Log("\n\n\n\n")
 			t.Fail()
 		}
 		user.ID = userID
