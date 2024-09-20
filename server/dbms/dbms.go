@@ -2,6 +2,7 @@ package dbms
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/google/uuid"
 	_ "github.com/mattn/go-sqlite3"
@@ -17,7 +18,6 @@ func (d *DBMS) Init() error {
 	if err != nil {
 		return err
 	}
-	defer DB.Close()
 	_, err = DB.Exec("CREATE TABLE IF NOT EXISTS USERS (id TEXT, name TEXT, email TEXT, password TEXT, devices TEXT)")
 	if err != nil {
 		return err
@@ -32,10 +32,13 @@ func (d *DBMS) Init() error {
 func (d *DBMS) AddUser(name, email, password string) (string, error) {
 	userID := uuid.New().String()
 	var count int
-	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE id = ?", userID).Scan(count)
+	fmt.Println(&email)
+	err := DB.QueryRow("SELECT COUNT(*) FROM USERS WHERE email = ?", email).Scan(&count)
+
 	if err != nil {
 		return "", err
 	}
+	fmt.Println("INSIDE ADD USER TO DB", userID, email)
 	if count > 0 {
 		return "", nil
 	}
