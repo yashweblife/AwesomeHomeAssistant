@@ -34,4 +34,12 @@ func TestDBMS(t *testing.T) {
 		}
 		t.Log("Got User", user)
 	})
+	t.Run("Remove User", func(t *testing.T) {
+		err := dbms.RemoveUser(user.ID)
+		if err != nil {
+			t.Fail()
+			t.Log(err)
+		}
+		t.Log("Removed User", user)
+	})
 }
