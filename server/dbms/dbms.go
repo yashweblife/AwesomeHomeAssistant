@@ -63,3 +63,10 @@ func (d *DBMS) RemoveUser(userID string) error {
 	}
 	return nil
 }
+func (d *DBMS) EditUser() {}
+
+func (d *DBMS) AddDevice(url, name string) error {}
+
+func (d *DBMS) GetDevice(id string) (Device, error) {}
+
+func (d *DBMS) RemoveDevice(id string) error {}
