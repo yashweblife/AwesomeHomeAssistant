@@ -7,3 +7,10 @@ type User struct {
 	Password string
 	Devices  string
 }
+
+type Device struct {
+	ID       string
+	URL      string
+	Name     string
+	Commands string
+}
