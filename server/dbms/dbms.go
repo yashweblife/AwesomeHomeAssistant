@@ -55,3 +55,11 @@ func (d *DBMS) GetUser(userID string) (User, error) {
 	}
 	return user, nil
 }
+
+func (d *DBMS) RemoveUser(userID string) error {
+	_, err := d.DB.Exec("DELETE FROM USERS WHERE id = ?", userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
