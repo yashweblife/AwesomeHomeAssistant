@@ -65,7 +65,14 @@ func (d *DBMS) RemoveUser(userID string) error {
 }
 func (d *DBMS) EditUser() {}
 
-func (d *DBMS) AddDevice(url, name string) error {}
+func (d *DBMS) AddDevice(url, name string) (string, error) {
+	deviceID := uuid.New().String()
+	_, err := d.DB.Exec("INSERT INTO DEVICES (id, url, name) VALUES (?,?,?)", deviceID, url, name)
+	if err != nil {
+		return "", err
+	}
+	return "", nil
+}
 
 func (d *DBMS) GetDevice(id string) (Device, error) {}
 
