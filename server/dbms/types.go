@@ -14,3 +14,14 @@ type Device struct {
 	Name     string
 	Commands string
 }
+
+type StructuredCommand struct {
+	Name  string
+	Value string
+}
+
+type Collection struct {
+	ID      string
+	Name    string
+	Devices []Device
+}
