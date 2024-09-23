@@ -84,4 +84,10 @@ func (d *DBMS) GetDevice(id string) (Device, error) {
 	return Device{}, nil
 }
 
-func (d *DBMS) RemoveDevice(id string) error {}
+func (d *DBMS) RemoveDevice(id string) error {
+	_, err := d.DB.Exec("DELETE FROM DEVICES WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
