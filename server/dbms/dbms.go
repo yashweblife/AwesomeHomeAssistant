@@ -74,6 +74,14 @@ func (d *DBMS) AddDevice(url, name string) (string, error) {
 	return "", nil
 }
 
-func (d *DBMS) GetDevice(id string) (Device, error) {}
+func (d *DBMS) GetDevice(id string) (Device, error) {
+	var device Device
+	row := d.DB.QueryRow("SELECT * FROM DEVICES WHERE id = ?", id)
+	err := row.Scan(&device.ID, &device.URL, &device.Name)
+	if err != nil {
+		return Device{}, err
+	}
+	return Device{}, nil
+}
 
 func (d *DBMS) RemoveDevice(id string) error {}
